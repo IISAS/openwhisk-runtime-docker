@@ -20,30 +20,33 @@ FROM ubuntu:22.04
 #CMD ["tail", "-f", "/dev/null"]
 
 RUN apt -y update
-RUN apt -y upgrade
+#RUN apt -y upgrade
 RUN ln -s /usr/share/zoneinfo/Europe/Bratislava /etc/localtime
-RUN apt -y install tzdata software-properties-common
-RUN apt -y install python2 python3
-RUN update-alternatives --install /usr/bin/python python /usr/bin/python2 1
+#RUN apt -y install tzdata software-properties-common
+#RUN apt -y install python2 python3
+RUN apt -y install python3
+#RUN update-alternatives --install /usr/bin/python python /usr/bin/python2 1
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 2
-RUN apt -y install perl jq zip git curl wget openssl ca-certificates sed openssh-client
-RUN update-ca-certificates
-RUN apt -y install bzip2 libbz2-dev g++ libc-dev
+#RUN apt -y install perl jq zip git curl wget openssl ca-certificates sed openssh-client
+#RUN update-ca-certificates
+#RUN apt -y install bzip2 libbz2-dev g++ libc-dev
 RUN apt -y install pip
-RUN pip install --upgrade pip setuptools six
+#RUN pip install --upgrade pip setuptools six
 COPY requirements.txt .
+# COPY ubuntuhandbook1-ubuntu-apps-jammy.list /etc/apt/sources.list.d/
 RUN pip install --no-cache-dir -r requirements.txt
-RUN DEBIAN_FRONTEND=noninteractive apt-get install keyboard-configuration
-RUN add-apt-repository -y ppa:ubuntuhandbook1/apps
+#RUN DEBIAN_FRONTEND=noninteractive apt-get install keyboard-configuration
+#RUN apt install -y software-properties-common
+RUN echo 'deb [signed-by=/usr/share/keyrings/ubuntuhandbook1.gpg] https://ppa.launchpadcontent.net/ubuntuhandbook1/apps/ubuntu jammy main' > /etc/apt/sources.list.d/ubuntuhandbook1-ubuntu-apps-jammy.list
+RUN apt-key --keyring /usr/share/keyrings/ubuntuhandbook1.gpg adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 4c1cbe14852541cb
+RUN apt update
+# RUN add-apt-repository -y ppa:ubuntuhandbook1/apps
 RUN apt -y install hugin hugin-data hugin-tools
-RUN apt -y install net-tools mc vim
 
 ENV FLASK_PROXY_PORT 8080
 
 RUN mkdir -p /actionProxy/owplatform
 ADD actionproxy.py /actionProxy/
-#ADD action.py /actionProxy/
-#ADD settings.py /actionProxy/
 ADD owplatform/__init__.py /actionProxy/owplatform/
 ADD owplatform/knative.py /actionProxy/owplatform/
 ADD owplatform/openwhisk.py /actionProxy/owplatform/
