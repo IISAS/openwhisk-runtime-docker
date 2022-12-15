@@ -17,9 +17,9 @@ def main(args):
     arg_dict = json.loads(args[1])
     get_folder(client, arg_dict['year'], arg_dict['month'], arg_dict['day'], arg_dict['hour'], arg_dict['minute'])
     execute_hugin_stitch()
-    cleanup_working_directory()
+    #cleanup_working_directory()
     post_result(client)
-    delete_directories()
+    #delete_directories()
     print("{\"result\": \"OK\"}")
 
 
