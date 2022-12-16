@@ -16,11 +16,11 @@ def main(args):
     client = init_client()
     arg_dict = json.loads(args[1])
     get_folder(client, arg_dict['year'], arg_dict['month'], arg_dict['day'], arg_dict['hour'], arg_dict['minute'])
+    #time.sleep(10000)
     execute_hugin_stitch()
-    #cleanup_working_directory()
+    cleanup_working_directory()
     post_result(client)
-    #time.sleep(100)
-    #delete_directories()
+    delete_directories()
     print("{\"result\": \"OK\"}")
 
 
@@ -77,14 +77,15 @@ def get_folder(client, year, month, day, hour, minutes):
     move_files_to_directory(settings.tmp_pto, settings.working_dir)
 
 def post_result(client):
-    onlyfiles = [os.path.join("/tmp/wrk/", f) for f in os.listdir("/tmp/wrk/") if os.path.isfile(os.path.join("/tmp/wrk/", f))]
-    files_with_size = [(file_path, os.stat(file_path).st_size) for file_path in onlyfiles]
-    print("XXX FILES:", files_with_size)
+    #onlyfiles = [os.path.join("/tmp/wrk/", f) for f in os.listdir("/tmp/wrk/") if os.path.isfile(os.path.join("/tmp/wrk/", f))]
+    #files_with_size = [(file_path, os.stat(file_path).st_size) for file_path in onlyfiles]
+    #print("XXX FILES:", files_with_size)
     client.upload_sync(remote_path="/Microstep/hugin/result/", local_path=settings.working_dir)
-    print("XXX UPLOAD: OK")
+    #print("XXX UPLOAD: OK")
 
 def execute_hugin_stitch():
     #os.system('bash -c "cd {} && hugin_executor --stitching project.pto"'.format(settings.working_dir))
+    os.system('hugin_executor -a {}project.pto'.format(settings.working_dir))
     os.system('hugin_executor -t 1 -s {}project.pto'.format(settings.working_dir))
     
 def cleanup_working_directory():
